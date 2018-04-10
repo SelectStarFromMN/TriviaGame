@@ -1,0 +1,17 @@
+.jumbotron {
+    background-image: url('../images/jungle.jpg');
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    color: white;
+    text-shadow:
+        -1px -1px 0 black,
+        1px -1px 0 black,
+        -1px 1px 0 black,
+        1px 1px 0 black;  
+}
+
+.list-group-item[aria-expanded="true"]{
+    background-color: forestgreen; !important
+ border-color: #aed248;
+
+}

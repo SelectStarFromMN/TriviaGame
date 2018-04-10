@@ -1,7 +1,7 @@
 
 window.onload = function () {
 
-    // Object array of triviaQuestions
+    // const Object array of triviaQuestions
     const triviaQuestions = [
         {
             question: "What is the national animal of Canada?",
@@ -15,30 +15,53 @@ window.onload = function () {
             correctImage: "./assets/images/beaver.gif"
         },
         {
-            question: "Wild turkeys can run 12 MPH.  How fast can they fly?",
+            question: "Wild turkeys can run 25 MPH.  How fast can they fly?",
             answers: {
-                a: "10 MPH",
-                b: "25 MPH",
-                c: "55 MPH",
-                d: "35 MPH"
+                a: "0 MPH",
+                b: "10 MPH",
+                c: "35 MPH",
+                d: "55 MPH"
             },
-            correctAnswer: "c",
+            correctAnswer: "d",
             correctImage: "./assets/images/turkey.gif"
+        },
+        {
+            question: "Which animal puts on a light show?",
+            answers: {
+                a: "Indigo Snake",
+                b: "Cuttlefish",
+                c: "Hummingbird Moth",
+                d: "Conger Eel"
+            },
+            correctAnswer: "b",
+            correctImage: "./assets/images/cuttlefish.gif"
+        },
+        {
+            question: "Which animal kills the most humans annually?",
+            answers: {
+                a: "Mosquitos",
+                b: "Crocodiles",
+                c: "Humans",
+                d: "Sharks"
+            },
+            correctAnswer: "a",
+            correctImage: "./assets/images/mosquito.gif"
         }
     ];
 
-    const secondsPerQuestion = 15;
-    var gameOver = false;
-    var questionOver = false;
-    var currQuestionNum = -1;
-    var secondsLeft = secondsPerQuestion;
-    var countdownTimer;
-    var domQuizPanel = document.getElementById("quiz-dynamic");
-    var currentQuestion;
-    var screenPauseTimer;
-    var numCorrect = 0;
-    var numIncorrect = 0;
-    var numUnanswered = 0;
+    // Variables
+    const secondsPerQuestion = 10;          // Time limit per question
+    const pauseSeconds = 5;                 // Time to pause before advancing next question
+    var gameOver = false;                   // Boolean whether game has ended
+    var questionOver = false;               // Boolean whether round has ended
+    var currQuestionNum = -1;               // Index of current question
+    var secondsLeft = secondsPerQuestion;   // Tracks remaining seconds
+    var countdownTimer;                     // Timer object for question countdown timer
+    var currentQuestion;                    // This is the actual question OBJECT
+    var screenPauseTimer;                   // Timer object for between-question pauses
+    var numCorrect = 0;                     // Track number of correct answers
+    var numIncorrect = 0;                   // Track number of incorrect answers
+    var numUnanswered = 0;                  // Track number of unanswered questions
 
     // Create html timer div in DOM #quiz-dynamic element
     // Note: Use string-template as Josh demonstrated in class (cool!!)
@@ -48,21 +71,22 @@ window.onload = function () {
 
     function countdown() {
         if (secondsLeft < 0) {
+            // Stop countdown timer
             clearTimeout(countdownTimer);
             // Timeout, GoNext Question
-            console.log('TooSlow, NEXT!')
+            console.log('TooSlow, NEXT!');
             questionOver = true;
             numUnanswered++;
-            $("#quiz-dynamic").append(`<br>
+            $("#quiz-dynamic").append(`
                 <p>Out of Time! (Correct answer is: ${currentQuestion.answers[currentQuestion.correctAnswer]})<p>`);
        
             // Display the correct answer image
-            $("#quiz-dynamic").append(`<br>
+            $("#quiz-dynamic").append(`
                 <div class="winner-image">
                     <img src="${currentQuestion.correctImage}" width="200" height="200">
                 </div>`);
             // Pause a few seconds before moving on
-            screenPauseTimer = setInterval(moveToNextQuestion,3000);
+            screenPauseTimer = setInterval(moveToNextQuestion,pauseSeconds * 1000);
         } else {
             $("#timer").text(secondsLeft);
             secondsLeft--;
@@ -72,6 +96,7 @@ window.onload = function () {
  
     // Append DOM with Question (and answer set as bootstrap button list group)
     // Note: Use data-* attribute to store letter for each answer (i.e. 'a', 'b', 'c' or 'd')
+    // TODO: Use loop for answers (not hardcoded 4)
     var showQuestion = function (questionNumber) {
         // $("#quiz-dynamic").append("<br><p>QUESTION HERE</p><br>");
         $("#quiz-dynamic").append(`<div class="list-group">
@@ -105,13 +130,13 @@ window.onload = function () {
         }
 
         // In either case, we are displaying the correct answer image
-        $("#quiz-dynamic").append(`<br>
+        $("#quiz-dynamic").append(`
                 <div class="winner-image">
                     <img src="${currentQuestion.correctImage}" width="200" height="200">
                 </div>`);
 
         // Pause a few seconds before moving on
-        screenPauseTimer = setInterval(moveToNextQuestion,3000);
+        screenPauseTimer = setInterval(moveToNextQuestion,pauseSeconds * 1000);
     }
 
     var moveToNextQuestion = function () {
@@ -136,10 +161,10 @@ window.onload = function () {
 
     var showFinalScore = function () {
         $("#quiz-dynamic").html("<h2>Quiz over, here's how you did!</h2>");
-        $("#quiz-dynamic").append(`<h3>Correct Answers: ${numCorrect}</h3>`);
+        $("#quiz-dynamic").append(`<h3>Correct Answers: ${numCorrect} </h3>`);
         $("#quiz-dynamic").append(`<h3>Incorrect Answers: ${numIncorrect}</h3>`);
         $("#quiz-dynamic").append(`<h3>Unanswered: ${numUnanswered}</h3>`);
-        $("#quiz-dynamic").append('<br><div class="text-center"> <button id="playTrivia" type="button" class="btn btn-outline-success center-block">Replay Nature Trivia!</button> </div>');
+        $("#quiz-dynamic").append('<br><div class="text-center restart"> <button id="replayTrivia" type="button" class="btn btn-outline-success center-block">Replay Nature Trivia!</button> </div>');
     }
 
     // Answer choice on-click
@@ -157,6 +182,20 @@ window.onload = function () {
     $("#playTrivia").click(function () {
         moveToNextQuestion();
     });
+
+
+    // Replay on-click
+    $('body').on('click', 'button', function() {
+        console.log('Restart!')
+        gameOver = false;
+        questionOver = false;
+        currQuestionNum = -1;
+        secondsLeft = secondsPerQuestion;
+        numCorrect = 0;
+        numIncorrect = 0;
+        numUnanswered = 0;
+        moveToNextQuestion();
+    })
 
 
 
