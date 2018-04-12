@@ -1,3 +1,15 @@
+html {
+    background: url('../images/nature.jpg') no-repeat center center fixed; 
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+
+body {
+    background-color: transparent;
+}
+
 .jumbotron {
     background-image: url('../images/jungle.jpg');
     background-repeat: no-repeat;
@@ -10,8 +22,11 @@
         1px 1px 0 black;  
 }
 
-.list-group-item[aria-expanded="true"]{
-    background-color: forestgreen; !important
- border-color: #aed248;
+.list-group-item.active{
+    background-color: forestgreen !important;
 
+}
+
+.btn {
+    background-color: white;
 }

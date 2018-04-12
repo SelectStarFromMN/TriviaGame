@@ -2,6 +2,7 @@
 window.onload = function () {
 
     // const Object array of triviaQuestions
+    // TODO: Add link or detail in addition to Correct answer/image
     const triviaQuestions = [
         {
             question: "What is the national animal of Canada?",
@@ -46,11 +47,22 @@ window.onload = function () {
             },
             correctAnswer: "a",
             correctImage: "./assets/images/mosquito.gif"
+        },
+        {
+            question: "How can you tell an Aspen tree?",
+            answers: {
+                a: "by its tag",
+                b: "by asking its mother",
+                c: "by the skis leaning against it",
+                d: "cause the way it is"
+            },
+            correctAnswer: "d",
+            correctImage: "./assets/images/aspen.gif"
         }
     ];
 
     // Variables
-    const secondsPerQuestion = 10;          // Time limit per question
+    const secondsPerQuestion = 15;          // Time limit per question
     const pauseSeconds = 5;                 // Time to pause before advancing next question
     var gameOver = false;                   // Boolean whether game has ended
     var questionOver = false;               // Boolean whether round has ended
@@ -69,6 +81,7 @@ window.onload = function () {
         $("#quiz-dynamic").html(`<h2>Time Remaining: <span id="timer">${sec}</span> seconds</h2>`);
     }
 
+    // Question countdown timer
     function countdown() {
         if (secondsLeft < 0) {
             // Stop countdown timer
@@ -139,6 +152,8 @@ window.onload = function () {
         screenPauseTimer = setInterval(moveToNextQuestion,pauseSeconds * 1000);
     }
 
+    // Advance to next question and reset countdown timer
+    // If no more questions remain, end game and show summary
     var moveToNextQuestion = function () {
         console.log('MoveNext: ' + currQuestionNum);
         secondsLeft = secondsPerQuestion;
@@ -155,10 +170,12 @@ window.onload = function () {
             gameOver = true;
             showFinalScore();
         }
+        // After moving to next question, stop the screenPause timer
         if (screenPauseTimer)
             clearTimeout(screenPauseTimer);
     }
 
+    // Display final summary
     var showFinalScore = function () {
         $("#quiz-dynamic").html("<h2>Quiz over, here's how you did!</h2>");
         $("#quiz-dynamic").append(`<h3>Correct Answers: ${numCorrect} </h3>`);
@@ -169,7 +186,6 @@ window.onload = function () {
 
     // Answer choice on-click
     $('body').on('click', 'a.question-choice', function() {
-    // $(".question-choice")[0].dataset.letter
     if (!questionOver) {
         console.log(this.dataset.letter);
         checkAnswer(this.dataset.letter, this.text);
@@ -185,7 +201,7 @@ window.onload = function () {
 
 
     // Replay on-click
-    $('body').on('click', 'button', function() {
+    $('body').on('click', '#replayTrivia', function() {
         console.log('Restart!')
         gameOver = false;
         questionOver = false;
@@ -196,7 +212,5 @@ window.onload = function () {
         numUnanswered = 0;
         moveToNextQuestion();
     })
-
-
 
 } // window.onload
