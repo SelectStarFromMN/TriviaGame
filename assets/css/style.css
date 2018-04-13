@@ -30,3 +30,11 @@ body {
 .btn {
     background-color: white;
 }
+
+.winner-image img {
+    float: left;
+}
+
+p.winner-trivia {
+    margin-left: 35%;
+}

@@ -2,7 +2,6 @@
 window.onload = function () {
 
     // const Object array of triviaQuestions
-    // TODO: Add link or detail in addition to Correct answer/image
     const triviaQuestions = [
         {
             question: "What is the national animal of Canada?",
@@ -13,7 +12,8 @@ window.onload = function () {
                 d: "Moose"
             },
             correctAnswer: "a",
-            correctImage: "./assets/images/beaver.gif"
+            correctImage: "./assets/images/beaver.gif",
+            correctTriva: "The beaver is Canada's national symbol, proudly representing the country for over 300 years!"
         },
         {
             question: "Wild turkeys can run 25 MPH.  How fast can they fly?",
@@ -24,8 +24,10 @@ window.onload = function () {
                 d: "55 MPH"
             },
             correctAnswer: "d",
-            correctImage: "./assets/images/turkey.gif"
-        },
+            correctImage: "./assets/images/turkey.gif",
+            correctTriva: "It's a myth that turkeys can't fly, when in fact they can fly up to 55 MPH!"
+        }
+        ,
         {
             question: "Which animal puts on a light show?",
             answers: {
@@ -35,7 +37,8 @@ window.onload = function () {
                 d: "Conger Eel"
             },
             correctAnswer: "b",
-            correctImage: "./assets/images/cuttlefish.gif"
+            correctImage: "./assets/images/cuttlefish.gif",
+            correctTriva: 'Cuttlefish can change color in rapid rippling patterns which mesmerizes their prey. This ability is even more impressive when you consider that cuttlefish are colorblind!'
         },
         {
             question: "Which animal kills the most humans annually?",
@@ -46,24 +49,37 @@ window.onload = function () {
                 d: "Sharks"
             },
             correctAnswer: "a",
-            correctImage: "./assets/images/mosquito.gif"
+            correctImage: "./assets/images/mosquito.gif",
+            correctTriva: "The most deadly animal in the world is the mosquito. According to the World Health Organization mosquito bites result in the deaths of more than 1 million people every year!"
+        },
+        {
+            question: "Which animal is the Linux mascot?",
+            answers: {
+                a: "Lynx",
+                b: "Penguin",
+                c: "Lion"
+            },
+            correctAnswer: "b",
+            correctImage: "./assets/images/tux.gif",
+            correctTriva: 'The familiar penguin ("Tux") was originally designed as a submission for a Linux logo contest.'
         },
         {
             question: "How can you tell an Aspen tree?",
             answers: {
-                a: "by its tag",
+                a: "by the attached sales tag",
                 b: "by asking its mother",
                 c: "by the skis leaning against it",
-                d: "cause the way it is"
+                d: "because the way it is"
             },
             correctAnswer: "d",
-            correctImage: "./assets/images/aspen.gif"
+            correctImage: "./assets/images/aspen.gif",
+            correctTriva: 'This phrase was made popular by the hilarious YouTube meme: "Neature Walk" (check it out -- pretty neat!)'
         }
     ];
 
     // Variables
-    const secondsPerQuestion = 15;          // Time limit per question
-    const pauseSeconds = 5;                 // Time to pause before advancing next question
+    const secondsPerQuestion = 30;          // Time limit per question
+    const pauseSeconds = 10;                // Time to pause before advancing next question
     var gameOver = false;                   // Boolean whether game has ended
     var questionOver = false;               // Boolean whether round has ended
     var currQuestionNum = -1;               // Index of current question
@@ -94,12 +110,7 @@ window.onload = function () {
                 <p>Out of Time! (Correct answer is: ${currentQuestion.answers[currentQuestion.correctAnswer]})<p>`);
        
             // Display the correct answer image
-            $("#quiz-dynamic").append(`
-                <div class="winner-image">
-                    <img src="${currentQuestion.correctImage}" width="200" height="200">
-                </div>`);
-            // Pause a few seconds before moving on
-            screenPauseTimer = setInterval(moveToNextQuestion,pauseSeconds * 1000);
+            showAnswer();
         } else {
             $("#timer").text(secondsLeft);
             secondsLeft--;
@@ -109,18 +120,18 @@ window.onload = function () {
  
     // Append DOM with Question (and answer set as bootstrap button list group)
     // Note: Use data-* attribute to store letter for each answer (i.e. 'a', 'b', 'c' or 'd')
-    // TODO: Use loop for answers (not hardcoded 4)
     var showQuestion = function (questionNumber) {
         // $("#quiz-dynamic").append("<br><p>QUESTION HERE</p><br>");
         $("#quiz-dynamic").append(`<div class="list-group">
             <a href="#" class="list-group-item list-group-item-action active">
                 ${triviaQuestions[questionNumber].question}
             </a>
-            <a href="#" class="list-group-item list-group-item-action question-choice" data-letter="a">${triviaQuestions[questionNumber].answers['a']}</a>
-            <a href="#" class="list-group-item list-group-item-action question-choice" data-letter="b">${triviaQuestions[questionNumber].answers['b']}</a>
-            <a href="#" class="list-group-item list-group-item-action question-choice" data-letter="c">${triviaQuestions[questionNumber].answers['c']}</a>
-            <a href="#" class="list-group-item list-group-item-action question-choice" data-letter="d">${triviaQuestions[questionNumber].answers['d']}</a>
             </div>`);
+
+        for (letter in triviaQuestions[questionNumber].answers) {
+            // console.log(letter + `: ${triviaQuestions[questionNumber].answers[letter]}`);
+            $("#quiz-dynamic").append(`<a href="#" class="list-group-item list-group-item-action question-choice" data-letter="${letter}">${triviaQuestions[questionNumber].answers[letter]}</a>`)
+        }
     }
 
     // Check answer (question-choice button has been clicked)
@@ -142,11 +153,24 @@ window.onload = function () {
                 <p>NOPE, not ${chosenAnswer}! (Correct answer is: ${currentQuestion.answers[currentQuestion.correctAnswer]})<p>`);
         }
 
-        // In either case, we are displaying the correct answer image
-        $("#quiz-dynamic").append(`
+        // In either case, we display the correct answer image
+        showAnswer();
+    }
+
+    var showAnswer = function () {
+        // Display the correct answer-image (regardless of guess)
+        $("#quiz-dynamic").append(
+                `<br>
                 <div class="winner-image">
                     <img src="${currentQuestion.correctImage}" width="200" height="200">
-                </div>`);
+                </div>`
+            );
+
+        // Display the correct answer trivia
+        $(".winner-image").append(
+            `<p class="winner-trivia">
+                Trivia: ${currentQuestion.correctTriva}
+            </p>`);
 
         // Pause a few seconds before moving on
         screenPauseTimer = setInterval(moveToNextQuestion,pauseSeconds * 1000);
@@ -155,7 +179,7 @@ window.onload = function () {
     // Advance to next question and reset countdown timer
     // If no more questions remain, end game and show summary
     var moveToNextQuestion = function () {
-        console.log('MoveNext: ' + currQuestionNum);
+        // console.log('MoveNext: ' + currQuestionNum);
         secondsLeft = secondsPerQuestion;
         if (currQuestionNum < triviaQuestions.length - 1) {
             currQuestionNum++;
